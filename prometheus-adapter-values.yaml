@@ -1,0 +1,23 @@
+prometheus:
+  url: http://prometheus-k8s.monitoring.svc.cluster.local
+  port: 9090
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+
+service:
+  port: 443
+
+logLevel: 6
+rules:
+  default: false
+  custom:
+    - seriesQuery: 'rabbitmq_queue_messages{namespace="default",service="hello-world"}'
+      resources:
+        overrides:
+          namespace: { resource: "namespace" }
+          service: { resource: "service" }
+      metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)

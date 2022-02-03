@@ -39,3 +39,24 @@ kubectl apply --filename https://raw.githubusercontent.com/rabbitmq/cluster-oper
 ```bash
 kubectl apply -f prometheus-roles.yaml
 ```
+
+Now we should be able to
+a. View the PodMonitor/ServiceMonitor custom definitions for out rabbitmq, and view related entries in prometheus.
+b. View our custom metrics by querying the custom.metrics.k8s.io api.
+
+(coming soon...)
+
+6. Deploy HPA:
+
+```bash
+kubectl apply -f hpa.yaml
+```
+
+7. Deploy perf test to publish messages to rabbitmq queue, see our metric grow and new pods be deployed accordingly.
+
+```bash
+username="$(kubectl get secret hello-world-default-user -o jsonpath='{.data.username}' | base64 --decode)"
+password="$(kubectl get secret hello-world-default-user -o jsonpath='{.data.password}' | base64 --decode)"
+service="$(kubectl get service hello-world -o jsonpath='{.spec.clusterIP}')"
+kubectl run perf-test --image=pivotalrabbitmq/perf-test -- --uri amqp://$username:$password@$service
+```

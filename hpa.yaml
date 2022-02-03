@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-world-server-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: hello-world-server
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Object
+      object:
+        metric:
+          name: rabbitmq_queue_messages
+        describedObject:
+          apiVersion: "/v1"
+          kind: Service
+          name: hello-world
+        target:
+          type: Value
+          value: "100"

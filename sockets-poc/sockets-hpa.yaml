@@ -1,0 +1,24 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: netshoot-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: netshoot-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Object
+      object:
+        metric:
+          name: open_socket_connections
+        describedObject:
+          apiVersion: "/v1"
+          kind: Service
+          name: netshoot
+        target:
+          type: Value
+          value: "5"

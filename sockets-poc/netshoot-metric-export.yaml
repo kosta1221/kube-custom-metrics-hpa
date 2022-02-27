@@ -23,7 +23,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             [
-              'while true; do echo -e "HTTP/1.0 200 OK\r\n\r\nopen_socket_connections $(($(ss -ta state big | wc -l) - 1))" | nc -q 0 -l -p 9090; done',
+              'websocat -n ws://host.minikube.internal:8080 & while true; do echo -e "HTTP/1.0 200 OK\r\n\r\nopen_socket_connections $(($(ss -ta state big | wc -l) - 1))" | nc -q 0 -l -p 9090; done',
             ]
           resources:
             requests: {}
